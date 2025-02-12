@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api';
-import dotenv from "dotenv";
-import express from "express";
+import dotenv from 'dotenv';
+import express from 'express';
 
 dotenv.config();
 
@@ -13,24 +13,52 @@ const tokenSpanish = process.env.BOT_TOKEN_ES as string;
 const channelIdSpanish = process.env.CHANNEL_ID_ES;
 
 const PORT = process.env.PORT || 3000;
+const WEBHOOK_URL = process.env.WEBHOOK_URL; // URL pública donde está alojado tu servidor
 
-// Verificar tokens
-if (!tokenEnglish || !tokenSpanish) {
-    throw new Error("❌ Faltan tokens en el archivo .env.");
+// Verificar tokens y URL del Webhook
+if (!tokenEnglish || !tokenSpanish || !WEBHOOK_URL) {
+    throw new Error("❌ Faltan tokens o la URL del Webhook en el archivo .env.");
 }
 
 // Inicializar ambos bots
-const botEnglish = new TelegramBot(tokenEnglish, { polling: true });
-const botSpanish = new TelegramBot(tokenSpanish, { polling: true });
+const botEnglish = new TelegramBot(tokenEnglish);
+const botSpanish = new TelegramBot(tokenSpanish);
 
-// Servidor Express (requerido para Render/Vercel)
+// Servidor Express
 const app = express();
-app.get("/", (_req, res) => {
-    res.send("¡Ambos bots de Telegram están en funcionamiento!");
+
+// Middleware para parsear el cuerpo de las solicitudes
+app.use(express.json());
+
+// Ruta para el Webhook de Telegram
+app.post(`/webhook/${tokenEnglish}`, (req, res) => {
+    botEnglish.processUpdate(req.body);
+    res.sendStatus(200);
 });
+
+app.post(`/webhook/${tokenSpanish}`, (req, res) => {
+    botSpanish.processUpdate(req.body);
+    res.sendStatus(200);
+});
+
+// Ruta de inicio para HTTP
+app.get('/', (_req, res) => {
+    res.send('¡Ambos bots de Telegram están en funcionamiento!');
+});
+
+// Iniciar el servidor HTTP
 app.listen(PORT, () => {
     console.log(`✅ Servidor en funcionamiento en el puerto ${PORT}`);
 });
+
+// Configurar el Webhook para ambos bots
+botEnglish.setWebHook(`${WEBHOOK_URL}/webhook/${tokenEnglish}`)
+    .then(() => console.log('✅ Webhook configurado para el bot en inglés'))
+    .catch(err => console.error('❌ Error al configurar el Webhook para el bot en inglés:', err));
+
+botSpanish.setWebHook(`${WEBHOOK_URL}/webhook/${tokenSpanish}`)
+    .then(() => console.log('✅ Webhook configurado para el bot en español'))
+    .catch(err => console.error('❌ Error al configurar el Webhook para el bot en español:', err));
 
 // ==================================================
 // Lógica del bot en inglés
@@ -54,7 +82,7 @@ botEnglish.on('new_chat_members', (msg) => {
         
         botEnglish.sendMessage(channelIdEnglish, welcomeMessage)
             .then(() => console.log(`✅ Welcome message sent to the channel for ${newUser.first_name}`))
-            .catch(err => console.error("❌ Failed to send welcome message:", err));
+            .catch(err => console.error('❌ Failed to send welcome message:', err));
     }
 });
 
@@ -66,15 +94,15 @@ botEnglish.onText(/\/start/, (msg) => {
 // 📌 Manejar /welcome (inglés)
 botEnglish.onText(/\/welcome/, (msg) => {
     if (!channelIdEnglish) {
-        botEnglish.sendMessage(msg.chat.id, "⚠️ Error: No channel ID is set in the .env file.");
+        botEnglish.sendMessage(msg.chat.id, '⚠️ Error: No channel ID is set in the .env file.');
         return;
     }
     
-    const welcomeMessage: string = "🎉 Welcome, everyone! Stay tuned for the best Amazon deals. 🚀💸";
+    const welcomeMessage = '🎉 Welcome, everyone! Stay tuned for the best Amazon deals. 🚀💸';
 
     botEnglish.sendMessage(channelIdEnglish, welcomeMessage)
-        .then(() => console.log("✅ Welcome message sent to the channel!"))
-        .catch(err => console.error("❌ Failed to send message:", err));
+        .then(() => console.log('✅ Welcome message sent to the channel!'))
+        .catch(err => console.error('❌ Failed to send message:', err));
 });
 
 // ==================================================
@@ -99,7 +127,7 @@ botSpanish.on('new_chat_members', (msg) => {
         
         botSpanish.sendMessage(channelIdSpanish, welcomeMessage)
             .then(() => console.log(`✅ Mensaje de bienvenida enviado al canal para ${newUser.first_name}`))
-            .catch(err => console.error("❌ Error al enviar el mensaje de bienvenida:", err));
+            .catch(err => console.error('❌ Error al enviar el mensaje de bienvenida:', err));
     }
 });
 
@@ -111,16 +139,16 @@ botSpanish.onText(/\/start/, (msg) => {
 // 📌 Manejar /bienvenida (español)
 botSpanish.onText(/\/bienvenida/, (msg) => {
     if (!channelIdSpanish) {
-        botSpanish.sendMessage(msg.chat.id, "⚠️ Error: No hay un ID de canal configurado en el archivo .env.");
+        botSpanish.sendMessage(msg.chat.id, '⚠️ Error: No hay un ID de canal configurado en el archivo .env.');
         return;
     }
     
-    const welcomeMessage: string = "🎉 ¡Bienvenidos todos! Manténganse atentos para las mejores ofertas de Amazon. 🚀💸";
+    const welcomeMessage = '🎉 ¡Bienvenidos todos! Manténganse atentos para las mejores ofertas de Amazon. 🚀💸';
 
     botSpanish.sendMessage(channelIdSpanish, welcomeMessage)
-        .then(() => console.log("✅ Mensaje de bienvenida enviado al canal!"))
-        .catch(err => console.error("❌ Error al enviar el mensaje:", err));
+        .then(() => console.log('✅ Mensaje de bienvenida enviado al canal!'))
+        .catch(err => console.error('❌ Error al enviar el mensaje:', err));
 });
 
-console.log("🤖 Bot en inglés en funcionamiento...");
-console.log("🤖 Bot en español en funcionamiento...");
+console.log('🤖 Bot en inglés en funcionamiento...');
+console.log('🤖 Bot en español en funcionamiento...');
