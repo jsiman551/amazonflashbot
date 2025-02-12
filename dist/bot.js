@@ -5,9 +5,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const express_1 = __importDefault(require("express"));
 dotenv_1.default.config();
 const token = process.env.BOT_TOKEN;
+const PORT = process.env.PORT || 3000;
 const bot = new node_telegram_bot_api_1.default(token, { polling: true });
+// Express server to keep Render/Vercel happy
+const app = (0, express_1.default)();
+app.get("/", (_req, res) => {
+    res.send("Telegram bot is running!");
+});
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+// Handle new users
 bot.on('new_chat_members', (msg) => {
     const newUsers = msg.new_chat_members || [];
     if (newUsers.length === 0)
@@ -23,3 +34,4 @@ bot.on('new_chat_members', (msg) => {
 bot.onText(/\/start/, (msg) => {
     bot.sendMessage(msg.chat.id, 'Welcome to @SuperDealsAmazonBot! Here you will find the best Amazon deals. Stay tuned! 🚀💸');
 });
+console.log("Bot is running...");
