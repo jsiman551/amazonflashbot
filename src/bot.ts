@@ -59,4 +59,8 @@ bot.onText(/\/welcome/, (msg) => {
         .catch(err => console.error("❌ Failed to send message:", err));
 });
 
+bot.onText(/\/getid/, (msg) => {
+    bot.sendMessage(msg.chat.id, `Chat ID: ${msg.chat.id}`);
+});
+
 console.log("🤖 Bot is running...");
