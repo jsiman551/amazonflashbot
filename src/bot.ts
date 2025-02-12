@@ -33,7 +33,15 @@ bot.on('new_chat_members', (msg) => {
     if (newUsers.length === 0 || !channelId) return;
 
     for (const newUser of newUsers) {
-        const welcomeMessage = `🎉 Welcome, ${newUser.first_name}! Stay tuned for the best Amazon deals. 🚀💸`;
+        const welcomeMessage = `
+            🎉 Welcome to @SuperDealsAmazonBot! 
+
+            🔹 This channel is dedicated to bringing you the best **Amazon deals**, **flash sales**, and **exclusive discounts** every day! 🚀💸
+
+            🛒 **Don't miss out!** Check out the **Free Shipping Zone** on Amazon here: [🔗 Click here to explore](https://amzn.to/4jRzgin)
+
+            Stay tuned for amazing savings! 🏷️🔥
+        `;
         
         bot.sendMessage(channelId, welcomeMessage)
             .then(() => console.log(`✅ Welcome message sent to the channel for ${newUser.first_name}`))
