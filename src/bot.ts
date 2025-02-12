@@ -13,7 +13,7 @@ if (!token) {
 }
 
 if (!channelId) {
-    console.warn("⚠️ Warning: CHANNEL_ID is not set. The /welcome command won't work properly.");
+    console.warn("⚠️ Warning: CHANNEL_ID is not set.");
 }
 
 const bot = new TelegramBot(token, { polling: true });
@@ -27,16 +27,17 @@ app.listen(PORT, () => {
     console.log(`✅ Server is running on port ${PORT}`);
 });
 
-// 📌 Handle new users
+// 📌 Handle new users (ONLY sends the welcome message to the channel)
 bot.on('new_chat_members', (msg) => {
     const newUsers = msg.new_chat_members || [];
-    if (newUsers.length === 0) return;
+    if (newUsers.length === 0 || !channelId) return;
 
     for (const newUser of newUsers) {
-        if (msg.chat.type === 'group' || msg.chat.type === 'supergroup') {
-            const welcomeMessage = `Welcome to @SuperDealsAmazonBot, ${newUser.first_name}! Stay tuned for amazing Amazon deals and flash sales. 🚀💸`;
-            bot.sendMessage(msg.chat.id, welcomeMessage);
-        }
+        const welcomeMessage = `🎉 Welcome, ${newUser.first_name}! Stay tuned for the best Amazon deals. 🚀💸`;
+        
+        bot.sendMessage(channelId, welcomeMessage)
+            .then(() => console.log(`✅ Welcome message sent to the channel for ${newUser.first_name}`))
+            .catch(err => console.error("❌ Failed to send welcome message:", err));
     }
 });
 
@@ -45,7 +46,7 @@ bot.onText(/\/start/, (msg) => {
     bot.sendMessage(msg.chat.id, 'Welcome to @SuperDealsAmazonBot! Here you will find the best Amazon deals. Stay tuned! 🚀💸');
 });
 
-// 📌 Handle /welcome command (now posts in the configured channel)
+// 📌 Handle /welcome command (posts in the configured channel)
 bot.onText(/\/welcome/, (msg) => {
     if (!channelId) {
         bot.sendMessage(msg.chat.id, "⚠️ Error: No channel ID is set in the .env file.");
@@ -57,10 +58,6 @@ bot.onText(/\/welcome/, (msg) => {
     bot.sendMessage(channelId, welcomeMessage)
         .then(() => console.log("✅ Welcome message sent to the channel!"))
         .catch(err => console.error("❌ Failed to send message:", err));
-});
-
-bot.onText(/\/getid/, (msg) => {
-    bot.sendMessage(msg.chat.id, `Chat ID: ${msg.chat.id}`);
 });
 
 console.log("🤖 Bot is running...");
