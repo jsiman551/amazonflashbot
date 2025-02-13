@@ -98,7 +98,19 @@ botEnglish.onText(/\/welcome/, (msg) => {
         return;
     }
     
-    const welcomeMessage = '🎉 Welcome, everyone! Stay tuned for the best Amazon deals. 🚀💸';
+    const welcomeMessage = `
+        🌟 **Welcome to Amazon Flash Deals!** 🌟
+
+        🛍️ This channel is dedicated to bringing you the **best Amazon deals**, **flash sales**, and **exclusive discounts** every day! 🚀💸
+
+        🛒 **Explore Top Categories**:
+        🔹 [Free Shipping Zone](https://amzn.to/4hTQgCF)  
+        🏡 [Home Decor](https://amzn.to/4gAyq6Q)  
+        🍽️ [Kitchen Products](https://amzn.to/4hACO78)  
+        🎮 [Gaming](https://amzn.to/4hCG4Pm)  
+
+        📌 **Don't miss out!** Stay tuned for the best Amazon savings. 🏷️🔥
+    `;
 
     botEnglish.sendMessage(channelIdEnglish, welcomeMessage)
         .then(() => console.log('✅ Welcome message sent to the channel!'))
@@ -116,13 +128,17 @@ botSpanish.on('new_chat_members', (msg) => {
 
     for (const newUser of newUsers) {
         const welcomeMessage = `
-            🎉 ¡Bienvenido a @SuperOfertasAmazonBot! 
+            🌟 **¡Bienvenido a Ofertas Flash Amazon!** 🌟
 
-            🔹 Este canal está dedicado a traerte las mejores **ofertas de Amazon**, **ventas flash** y **descuentos exclusivos** todos los días! 🚀💸
+            🛍️ Este canal está dedicado a traerte las **mejores ofertas de Amazon**, **ventas flash** y **descuentos exclusivos** todos los días! 🚀💸
 
-            🛒 **¡No te lo pierdas!** Echa un vistazo a la **Zona de Envío Gratis** en Amazon aquí: [🔗 Haz clic aquí para explorar](https://amzn.to/4jRzgin)
+            🛒 **Explora las Mejores Categorías**:
+            🔹 [Zona de Envío Gratis](https://amzn.to/4hTQgCF)  
+            🏡 [Decoración para el Hogar](https://amzn.to/4gAyq6Q)  
+            🍽️ [Productos de Cocina](https://amzn.to/4hACO78)  
+            🎮 [Gaming](https://amzn.to/4hCG4Pm)  
 
-            ¡Mantente atento para ahorrar mucho! 🏷️🔥
+            📌 **¡No te lo pierdas!** Mantente atento para ahorrar mucho. 🏷️🔥
         `;
         
         botSpanish.sendMessage(channelIdSpanish, welcomeMessage)
