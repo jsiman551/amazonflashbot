@@ -159,7 +159,19 @@ botSpanish.onText(/\/bienvenida/, (msg) => {
         return;
     }
     
-    const welcomeMessage = '🎉 ¡Bienvenidos todos! Manténganse atentos para las mejores ofertas de Amazon. 🚀💸';
+        const welcomeMessage = `
+            🌟 **¡Bienvenido a Ofertas Flash Amazon!** 🌟
+
+            🛍️ Este canal está dedicado a traerte las **mejores ofertas de Amazon**, **ventas flash** y **descuentos exclusivos** todos los días! 🚀💸
+
+            🛒 **Explora las Mejores Categorías**:
+            🔹 [Zona de Envío Gratis](https://amzn.to/4hTQgCF)  
+            🏡 [Decoración para el Hogar](https://amzn.to/4gAyq6Q)  
+            🍽️ [Productos de Cocina](https://amzn.to/4hACO78)  
+            🎮 [Gaming](https://amzn.to/4hCG4Pm)  
+
+            📌 **¡No te lo pierdas!** Mantente atento para ahorrar mucho. 🏷️🔥
+        `;
 
     botSpanish.sendMessage(channelIdSpanish, welcomeMessage)
         .then(() => console.log('✅ Mensaje de bienvenida enviado al canal!'))
